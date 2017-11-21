@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="“iOS, OC”" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;lt;!DOCTYPE html&amp;gt;               GCD详解      .markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(171, 178, 191); background-color: rgb(40, 44, 52); overflow:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bob的个人博客">
+<meta property="og:url" content="http://taodongbo.cn/2017/11/20/GCD详解/index.html">
+<meta property="og:site_name" content="Bob的个人博客">
+<meta property="og:description" content="&amp;lt;!DOCTYPE html&amp;gt;               GCD详解      .markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(171, 178, 191); background-color: rgb(40, 44, 52); overflow:">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-11-21T03:06:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bob的个人博客">
+<meta name="twitter:description" content="&amp;lt;!DOCTYPE html&amp;gt;               GCD详解      .markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(171, 178, 191); background-color: rgb(40, 44, 52); overflow:">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://taodongbo.cn/2017/11/20/GCD详解/"/>
+
+
+
+
+
+  <title> | Bob的个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?32ff7fdc0f81a9c68d1c84d273103b07";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bob的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">用代码衡量时间长度，用技术实现自我价值</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://taodongbo.cn/2017/11/20/GCD详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="陶冬波">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bob的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-20T16:17:15+08:00">
+                2017-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&lt;!DOCTYPE html&gt;</p>
+<html><br>  <head><br>      <meta charset="utf-8"><br>      <title>GCD详解</title><br>      <style>.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(171, 178, 191); background-color: rgb(40, 44, 52); overflow: auto; }<br>.markdown-preview:not([data-use-github-style]) &gt; :first-child { margin-top: 0px; }<br>.markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(255, 255, 255); }<br>.markdown-preview:not([data-use-github-style]) h1 { font-size: 2.4em; font-weight: 300; }<br>.markdown-preview:not([data-use-github-style]) h2 { font-size: 1.8em; font-weight: 400; }<br>.markdown-preview:not([data-use-github-style]) h3 { font-size: 1.5em; font-weight: 500; }<br>.markdown-preview:not([data-use-github-style]) h4 { font-size: 1.2em; font-weight: 600; }<br>.markdown-preview:not([data-use-github-style]) h5 { font-size: 1.1em; font-weight: 600; }<br>.markdown-preview:not([data-use-github-style]) h6 { font-size: 1em; font-weight: 600; }<br>.markdown-preview:not([data-use-github-style]) strong { color: rgb(255, 255, 255); }<br>.markdown-preview:not([data-use-github-style]) del { color: rgb(124, 135, 156); }<br>.markdown-preview:not([data-use-github-style]) a, .markdown-preview:not([data-use-github-style]) a code { color: rgb(82, 139, 255); }<br>.markdown-preview:not([data-use-github-style]) img { max-width: 100%; }<br>.markdown-preview:not([data-use-github-style]) &gt; p { margin-top: 0px; margin-bottom: 1.5em; }<br>.markdown-preview:not([data-use-github-style]) &gt; ul, .markdown-preview:not([data-use-github-style]) &gt; ol { margin-bottom: 1.5em; }<br>.markdown-preview:not([data-use-github-style]) blockquote { margin: 1.5em 0px; font-size: inherit; color: rgb(124, 135, 156); border-color: rgb(75, 83, 98); border-width: 4px; }<br>.markdown-preview:not([data-use-github-style]) hr { margin: 3em 0px; border-top: 2px dashed rgb(75, 83, 98); background: none; }<br>.markdown-preview:not([data-use-github-style]) table { margin: 1.5em 0px; }<br>.markdown-preview:not([data-use-github-style]) th { color: rgb(255, 255, 255); }<br>.markdown-preview:not([data-use-github-style]) th, .markdown-preview:not([data-use-github-style]) td { padding: 0.66em 1em; border: 1px solid rgb(75, 83, 98); }<br>.markdown-preview:not([data-use-github-style]) code { color: rgb(255, 255, 255); background-color: rgb(58, 63, 75); }<br>.markdown-preview:not([data-use-github-style]) pre.editor-colors { margin: 1.5em 0px; padding: 1em; font-size: 0.92em; border-radius: 3px; background-color: rgb(49, 54, 63); }<br>.markdown-preview:not([data-use-github-style]) kbd { color: rgb(255, 255, 255); border-width: 1px 1px 2px; border-style: solid; border-color: rgb(75, 83, 98) rgb(75, 83, 98) rgb(62, 68, 81); border-image: initial; background-color: rgb(58, 63, 75); }<br>.markdown-preview[data-use-github-style] { font-family: “Helvetica Neue”, Helvetica, “Segoe UI”, Arial, freesans, sans-serif; line-height: 1.6; word-wrap: break-word; padding: 30px; font-size: 16px; color: rgb(51, 51, 51); background-color: rgb(255, 255, 255); overflow: scroll; }<br>.markdown-preview[data-use-github-style] &gt; :first-child { margin-top: 0px !important; }<br>.markdown-preview[data-use-github-style] &gt; :last-child { margin-bottom: 0px !important; }<br>.markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }<br>.markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }<br>.markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }<br>.markdown-preview[data-use-github-style] .anchor:focus { outline: none; }<br>.markdown-preview[data-use-github-style] h1, .markdown-preview[data-use-github-style] h2, .markdown-preview[data-use-github-style] h3, .markdown-preview[data-use-github-style] h4, .markdown-preview[data-use-github-style] h5, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }<br>.markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }<br>.markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }<br>.markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }<br>.markdown-preview[data-use-github-style] h1 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview[data-use-github-style] h1 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }<br>.markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom: 1px solid rgb(238, 238, 238); }<br>.markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }<br>.markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom: 1px solid rgb(238, 238, 238); }<br>.markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }<br>.markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }<br>.markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }<br>.markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }<br>.markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }<br>.markdown-preview[data-use-github-style] h5 { font-size: 1em; }<br>.markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }<br>.markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }<br>.markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }<br>.markdown-preview[data-use-github-style] p, .markdown-preview[data-use-github-style] blockquote, .markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol, .markdown-preview[data-use-github-style] dl, .markdown-preview[data-use-github-style] table, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }<br>.markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; background-color: rgb(231, 231, 231); border: 0px none; }<br>.markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }<br>.markdown-preview[data-use-github-style] ul.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }<br>.markdown-preview[data-use-github-style] ul ul, .markdown-preview[data-use-github-style] ul ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }<br>.markdown-preview[data-use-github-style] li &gt; p { margin-top: 16px; }<br>.markdown-preview[data-use-github-style] dl { padding: 0px; }<br>.markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }<br>.markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }<br>.markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left: 4px solid rgb(221, 221, 221); }<br>.markdown-preview[data-use-github-style] blockquote &gt; :first-child { margin-top: 0px; }<br>.markdown-preview[data-use-github-style] blockquote &gt; :last-child { margin-bottom: 0px; }<br>.markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: keep-all; }<br>.markdown-preview[data-use-github-style] table th { font-weight: bold; }<br>.markdown-preview[data-use-github-style] table th, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }<br>.markdown-preview[data-use-github-style] table tr { background-color: rgb(255, 255, 255); border-top: 1px solid rgb(204, 204, 204); }<br>.markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }<br>.markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }<br>.markdown-preview[data-use-github-style] .emoji { max-width: none; }<br>.markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }<br>.markdown-preview[data-use-github-style] span.frame &gt; span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }<br>.markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }<br>.markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }<br>.markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }<br>.markdown-preview[data-use-github-style] span.align-center &gt; span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }<br>.markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }<br>.markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }<br>.markdown-preview[data-use-github-style] span.align-right &gt; span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }<br>.markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }<br>.markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }<br>.markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }<br>.markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }<br>.markdown-preview[data-use-github-style] span.float-right &gt; span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }<br>.markdown-preview[data-use-github-style] code, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; background-color: rgba(0, 0, 0, 0.0392157); border-radius: 3px; }<br>.markdown-preview[data-use-github-style] code::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview[data-use-github-style] code::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: “ “; }<br>.markdown-preview[data-use-github-style] code br, .markdown-preview[data-use-github-style] tt br { display: none; }<br>.markdown-preview[data-use-github-style] del code { text-decoration: inherit; }<br>.markdown-preview[data-use-github-style] pre &gt; code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; background: transparent; border: 0px; }<br>.markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }<br>.markdown-preview[data-use-github-style] .highlight pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, 247); border-radius: 3px; }<br>.markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }<br>.markdown-preview[data-use-github-style] pre { word-wrap: normal; }<br>.markdown-preview[data-use-github-style] pre code, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; background-color: transparent; border: 0px; }<br>.markdown-preview[data-use-github-style] pre code::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }<br>.markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; background-color: rgb(252, 252, 252); border-width: 1px; border-style: solid; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-image: initial; border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; }<br>.markdown-preview[data-use-github-style] a { color: rgb(51, 122, 183); }<br>.markdown-preview[data-use-github-style] code { color: inherit; }<br>.markdown-preview[data-use-github-style] pre.editor-colors { padding: 0.8em 1em; margin-bottom: 1em; font-size: 0.85em; border-radius: 4px; overflow: auto; }<br>.scrollbars-visible-always .markdown-preview pre.editor-colors .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors .horizontal-scrollbar { visibility: hidden; }<br>.scrollbars-visible-always .markdown-preview pre.editor-colors:hover .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors:hover .horizontal-scrollbar { visibility: visible; }<br>.markdown-preview .task-list-item-checkbox { position: absolute; margin: 0.25em 0px 0px -1.4em; }<br>.markdown-preview code { text-shadow: none; }<br>.bracket-matcher .region {<br>  border-bottom: 1px dotted lime;<br>  position: absolute;<br>}<br><br>.spell-check-misspelling .region {<br>  border-bottom: 2px dotted rgba(255, 51, 51, 0.75);<br>}<br>.spell-check-corrections {<br>  width: 25em !important;<br>}<br><br>pre.editor-colors {<br>  background-color: #282c34;<br>  color: #abb2bf;<br>}<br>pre.editor-colors .line.cursor-line {<br>  background-color: rgba(153, 187, 255, 0.04);<br>}<br>pre.editor-colors .invisible {<br>  color: #abb2bf;<br>}<br>pre.editor-colors .cursor {<br>  border-left: 2px solid #528bff;<br>}<br>pre.editor-colors .selection .region {<br>  background-color: #3e4451;<br>}<br>pre.editor-colors .bracket-matcher .region {<br>  border-bottom: 1px solid #528bff;<br>  box-sizing: border-box;<br>}<br>pre.editor-colors .invisible-character {<br>  color: rgba(171, 178, 191, 0.15);<br>}<br>pre.editor-colors .indent-guide {<br>  color: rgba(171, 178, 191, 0.15);<br>}<br>pre.editor-colors .wrap-guide {<br>  background-color: rgba(171, 178, 191, 0.15);<br>}<br>pre.editor-colors .find-result .region.region.region,<br>pre.editor-colors .current-result .region.region.region {<br>  border-radius: 2px;<br>  background-color: rgba(82, 139, 255, 0.24);<br>  transition: border-color 0.4s;<br>}<br>pre.editor-colors .find-result .region.region.region {<br>  border: 2px solid transparent;<br>}<br>pre.editor-colors .current-result .region.region.region {<br>  border: 2px solid #528bff;<br>  transition-duration: .1s;<br>}<br>pre.editor-colors .gutter .line-number {<br>  color: #636d83;<br>  -webkit-font-smoothing: antialiased;<br>}<br>pre.editor-colors .gutter .line-number.cursor-line {<br>  color: #abb2bf;<br>  background-color: #2c313a;<br>}<br>pre.editor-colors .gutter .line-number.cursor-line-no-selection {<br>  background-color: transparent;<br>}<br>pre.editor-colors .gutter .line-number .icon-right {<br>  color: #abb2bf;<br>}<br>pre.editor-colors .gutter:not(.git-diff-icon) .line-number.git-line-removed.git-line-removed::before {<br>  bottom: -3px;<br>}<br>pre.editor-colors .gutter:not(.git-diff-icon) .line-number.git-line-removed::after {<br>  content: “”;<br>  position: absolute;<br>  left: 0px;<br>  bottom: 0px;<br>  width: 25px;<br>  border-bottom: 1px dotted rgba(224, 82, 82, 0.5);<br>  pointer-events: none;<br>}<br>pre.editor-colors .gutter .line-number.folded,<br>pre.editor-colors .gutter .line-number:after,<br>pre.editor-colors .fold-marker:after {<br>  color: #abb2bf;<br>}<br>.syntax–comment {<br>  color: #5c6370;<br>  font-style: italic;<br>}<br>.syntax–comment .syntax–markup.syntax–link {<br>  color: #5c6370;<br>}<br>.syntax–entity.syntax–name.syntax–type {<br>  color: #e5c07b;<br>}<br>.syntax–entity.syntax–other.syntax–inherited-class {<br>  color: #98c379;<br>}<br>.syntax–keyword {<br>  color: #c678dd;<br>}<br>.syntax–keyword.syntax–control {<br>  color: #c678dd;<br>}<br>.syntax–keyword.syntax–operator {<br>  color: #abb2bf;<br>}<br>.syntax–keyword.syntax–other.syntax–special-method {<br>  color: #61afef;<br>}<br>.syntax–keyword.syntax–other.syntax–unit {<br>  color: #d19a66;<br>}<br>.syntax–storage {<br>  color: #c678dd;<br>}<br>.syntax–storage.syntax–type.syntax–annotation,<br>.syntax–storage.syntax–type.syntax–primitive {<br>  color: #c678dd;<br>}<br>.syntax–storage.syntax–modifier.syntax–package,<br>.syntax–storage.syntax–modifier.syntax–import {<br>  color: #abb2bf;<br>}<br>.syntax–constant {<br>  color: #d19a66;<br>}<br>.syntax–constant.syntax–variable {<br>  color: #d19a66;<br>}<br>.syntax–constant.syntax–character.syntax–escape {<br>  color: #56b6c2;<br>}<br>.syntax–constant.syntax–numeric {<br>  color: #d19a66;<br>}<br>.syntax–constant.syntax–other.syntax–color {<br>  color: #56b6c2;<br>}<br>.syntax–constant.syntax–other.syntax–symbol {<br>  color: #56b6c2;<br>}<br>.syntax–variable {<br>  color: #e06c75;<br>}<br>.syntax–variable.syntax–interpolation {<br>  color: #be5046;<br>}<br>.syntax–variable.syntax–parameter {<br>  color: #abb2bf;<br>}<br>.syntax–string {<br>  color: #98c379;<br>}<br>.syntax–string.syntax–regexp {<br>  color: #56b6c2;<br>}<br>.syntax–string.syntax–regexp .syntax–source.syntax–ruby.syntax–embedded {<br>  color: #e5c07b;<br>}<br>.syntax–string.syntax–other.syntax–link {<br>  color: #e06c75;<br>}<br>.syntax–punctuation.syntax–definition.syntax–comment {<br>  color: #5c6370;<br>}<br>.syntax–punctuation.syntax–definition.syntax–method-parameters,<br>.syntax–punctuation.syntax–definition.syntax–function-parameters,<br>.syntax–punctuation.syntax–definition.syntax–parameters,<br>.syntax–punctuation.syntax–definition.syntax–separator,<br>.syntax–punctuation.syntax–definition.syntax–seperator,<br>.syntax–punctuation.syntax–definition.syntax–array {<br>  color: #abb2bf;<br>}<br>.syntax–punctuation.syntax–definition.syntax–heading,<br>.syntax–punctuation.syntax–definition.syntax–identity {<br>  color: #61afef;<br>}<br>.syntax–punctuation.syntax–definition.syntax–bold {<br>  color: #e5c07b;<br>  font-weight: bold;<br>}<br>.syntax–punctuation.syntax–definition.syntax–italic {<br>  color: #c678dd;<br>  font-style: italic;<br>}<br>.syntax–punctuation.syntax–section.syntax–embedded {<br>  color: #be5046;<br>}<br>.syntax–punctuation.syntax–section.syntax–method,<br>.syntax–punctuation.syntax–section.syntax–class,<br>.syntax–punctuation.syntax–section.syntax–inner-class {<br>  color: #abb2bf;<br>}<br>.syntax–support.syntax–class {<br>  color: #e5c07b;<br>}<br>.syntax–support.syntax–type {<br>  color: #56b6c2;<br>}<br>.syntax–support.syntax–function {<br>  color: #56b6c2;<br>}<br>.syntax–support.syntax–function.syntax–any-method {<br>  color: #61afef;<br>}<br>.syntax–entity.syntax–name.syntax–function {<br>  color: #61afef;<br>}<br>.syntax–entity.syntax–name.syntax–class,<br>.syntax–entity.syntax–name.syntax–type.syntax–class {<br>  color: #e5c07b;<br>}<br>.syntax–entity.syntax–name.syntax–section {<br>  color: #61afef;<br>}<br>.syntax–entity.syntax–name.syntax–tag {<br>  color: #e06c75;<br>}<br>.syntax–entity.syntax–other.syntax–attribute-name {<br>  color: #d19a66;<br>}<br>.syntax–entity.syntax–other.syntax–attribute-name.syntax–id {<br>  color: #61afef;<br>}<br>.syntax–meta.syntax–class {<br>  color: #e5c07b;<br>}<br>.syntax–meta.syntax–class.syntax–body {<br>  color: #abb2bf;<br>}<br>.syntax–meta.syntax–method-call,<br>.syntax–meta.syntax–method {<br>  color: #abb2bf;<br>}<br>.syntax–meta.syntax–definition.syntax–variable {<br>  color: #e06c75;<br>}<br>.syntax–meta.syntax–link {<br>  color: #d19a66;<br>}<br>.syntax–meta.syntax–require {<br>  color: #61afef;<br>}<br>.syntax–meta.syntax–selector {<br>  color: #c678dd;<br>}<br>.syntax–meta.syntax–separator {<br>  background-color: #373b41;<br>  color: #abb2bf;<br>}<br>.syntax–meta.syntax–tag {<br>  color: #abb2bf;<br>}<br>.syntax–underline {<br>  text-decoration: underline;<br>}<br>.syntax–none {<br>  color: #abb2bf;<br>}<br>.syntax–invalid.syntax–deprecated {<br>  color: #523d14 !important;<br>  background-color: #e0c285 !important;<br>}<br>.syntax–invalid.syntax–illegal {<br>  color: white !important;<br>  background-color: #e05252 !important;<br>}<br>.syntax–markup.syntax–bold {<br>  color: #d19a66;<br>  font-weight: bold;<br>}<br>.syntax–markup.syntax–changed {<br>  color: #c678dd;<br>}<br>.syntax–markup.syntax–deleted {<br>  color: #e06c75;<br>}<br>.syntax–markup.syntax–italic {<br>  color: #c678dd;<br>  font-style: italic;<br>}<br>.syntax–markup.syntax–heading {<br>  color: #e06c75;<br>}<br>.syntax–markup.syntax–heading .syntax–punctuation.syntax–definition.syntax–heading {<br>  color: #61afef;<br>}<br>.syntax–markup.syntax–link {<br>  color: #56b6c2;<br>}<br>.syntax–markup.syntax–inserted {<br>  color: #98c379;<br>}<br>.syntax–markup.syntax–quote {<br>  color: #d19a66;<br>}<br>.syntax–markup.syntax–raw {<br>  color: #98c379;<br>}<br>.syntax–source.syntax–c .syntax–keyword.syntax–operator {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–cpp .syntax–keyword.syntax–operator {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–cs .syntax–keyword.syntax–operator {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–css .syntax–property-name,<br>.syntax–source.syntax–css .syntax–property-value {<br>  color: #828997;<br>}<br>.syntax–source.syntax–css .syntax–property-name.syntax–support,<br>.syntax–source.syntax–css .syntax–property-value.syntax–support {<br>  color: #abb2bf;<br>}<br>.syntax–source.syntax–elixir .syntax–source.syntax–embedded.syntax–source {<br>  color: #abb2bf;<br>}<br>.syntax–source.syntax–elixir .syntax–constant.syntax–language,<br>.syntax–source.syntax–elixir .syntax–constant.syntax–numeric,<br>.syntax–source.syntax–elixir .syntax–constant.syntax–definition {<br>  color: #61afef;<br>}<br>.syntax–source.syntax–elixir .syntax–variable.syntax–definition,<br>.syntax–source.syntax–elixir .syntax–variable.syntax–anonymous {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–elixir .syntax–quoted {<br>  color: #98c379;<br>}<br>.syntax–source.syntax–elixir .syntax–keyword.syntax–special-method,<br>.syntax–source.syntax–elixir .syntax–embedded.syntax–section,<br>.syntax–source.syntax–elixir .syntax–embedded.syntax–source.syntax–empty {<br>  color: #e06c75;<br>}<br>.syntax–source.syntax–elixir .syntax–readwrite.syntax–module .syntax–punctuation {<br>  color: #e06c75;<br>}<br>.syntax–source.syntax–elixir .syntax–regexp.syntax–section,<br>.syntax–source.syntax–elixir .syntax–regexp.syntax–string {<br>  color: #be5046;<br>}<br>.syntax–source.syntax–elixir .syntax–separator,<br>.syntax–source.syntax–elixir .syntax–keyword.syntax–operator {<br>  color: #d19a66;<br>}<br>.syntax–source.syntax–elixir .syntax–variable.syntax–constant {<br>  color: #e5c07b;<br>}<br>.syntax–source.syntax–elixir .syntax–array,<br>.syntax–source.syntax–elixir .syntax–scope,<br>.syntax–source.syntax–elixir .syntax–section {<br>  color: #828997;<br>}<br>.syntax–source.syntax–gfm .syntax–markup {<br>  -webkit-font-smoothing: auto;<br>}<br>.syntax–source.syntax–gfm .syntax–link .syntax–entity {<br>  color: #61afef;<br>}<br>.syntax–source.syntax–go .syntax–storage.syntax–type.syntax–string {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–ini .syntax–keyword.syntax–other.syntax–definition.syntax–ini {<br>  color: #e06c75;<br>}<br>.syntax–source.syntax–java .syntax–storage.syntax–modifier.syntax–import {<br>  color: #e5c07b;<br>}<br>.syntax–source.syntax–java .syntax–storage.syntax–type {<br>  color: #e5c07b;<br>}<br>.syntax–source.syntax–java .syntax–keyword.syntax–operator.syntax–instanceof {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–java-properties .syntax–meta.syntax–key-pair {<br>  color: #e06c75;<br>}<br>.syntax–source.syntax–java-properties .syntax–meta.syntax–key-pair &gt; .syntax–punctuation {<br>  color: #abb2bf;<br>}<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator {<br>  color: #56b6c2;<br>}<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator.syntax–delete,<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator.syntax–in,<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator.syntax–of,<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator.syntax–instanceof,<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator.syntax–new,<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator.syntax–typeof,<br>.syntax–source.syntax–js .syntax–keyword.syntax–operator.syntax–void {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–dictionary.syntax–json &gt; .syntax–string.syntax–quoted.syntax–json {<br>  color: #e06c75;<br>}<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–dictionary.syntax–json &gt; .syntax–string.syntax–quoted.syntax–json &gt; .syntax–punctuation.syntax–string {<br>  color: #e06c75;<br>}<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–dictionary.syntax–json &gt; .syntax–value.syntax–json &gt; .syntax–string.syntax–quoted.syntax–json,<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–array.syntax–json &gt; .syntax–value.syntax–json &gt; .syntax–string.syntax–quoted.syntax–json,<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–dictionary.syntax–json &gt; .syntax–value.syntax–json &gt; .syntax–string.syntax–quoted.syntax–json &gt; .syntax–punctuation,<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–array.syntax–json &gt; .syntax–value.syntax–json &gt; .syntax–string.syntax–quoted.syntax–json &gt; .syntax–punctuation {<br>  color: #98c379;<br>}<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–dictionary.syntax–json &gt; .syntax–constant.syntax–language.syntax–json,<br>.syntax–source.syntax–json .syntax–meta.syntax–structure.syntax–array.syntax–json &gt; .syntax–constant.syntax–language.syntax–json {<br>  color: #56b6c2;<br>}<br>.syntax–source.syntax–ruby .syntax–constant.syntax–other.syntax–symbol &gt; .syntax–punctuation {<br>  color: inherit;<br>}<br>.syntax–source.syntax–python .syntax–keyword.syntax–operator.syntax–logical.syntax–python {<br>  color: #c678dd;<br>}<br>.syntax–source.syntax–python .syntax–variable.syntax–parameter {<br>  color: #d19a66;<br>}<br></style><br>  </head><br>  <body class="markdown-preview" data-use-github-style=""><table data-table-type="yaml-metadata"><br>  <thead><br>  <tr><br>  <th>title</th><br><br>  <th>date</th><br><br>  <th>tags</th><br>  </tr><br>  </thead><br>  <tbody><br>  <tr><br>  <td><div>GCD详解</div></td><br><br>  <td><div>Tue Nov 21 2017 00:17:15 GMT+0800 (CST)</div></td><br><br>  <td><div>GCD (Objective-C高级编程：iOS与OS X多线程和内存管理)</div></td><br>  </tr><br>  </tbody><br></table><br><br><h1>GCD（Grand Central Dispatch） 详解</h1><br><p>GCD属于系统级的线程管理，在Dispatch queue中执行需要执行的任务性能非常的高。GCD这块已经开源，地址<a href="http://libdispatch.macosforge.org。GCD中的FIFO队列称为dispatch" target="_blank" rel="external">http://libdispatch.macosforge.org。GCD中的FIFO队列称为dispatch</a> queue，用来保证先进来的任务先得到执行。</p><br><h2>GCD概要</h2><br><p>和operation queue一样都是基于队列的并发编程API，他们通过集中管理大家协同使用的线程池。<br>公开的5个不同队列：运行在主线程中的main queue，3个不同优先级的后台队列（High Priority Queue，Default Priority Queue，Low Priority Queue），以及一个优先级更低的后台队列Background Priority Queue（用于I/O）<br>可创建自定义队列：串行或并列队列。自定义一般放在Default Priority Queue和Main Queue里。<br>操作是在多线程上还是单线程主要是看队列的类型和执行方法，并行队列异步执行才能在多线程，并行队列同步执行就只会在这个并行队列在队列中被分配的那个线程执行。</p><br><h2>基本概念</h2><br><ul><br><li>系统标准两个队列</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//全局队列，一个并行的队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_get_global_queue</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//主队列，主线程中的唯一队列，一个串行队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_get_main_queue</span></span></div></pre><ul><br><li>自定义队列</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//串行队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_create(“com.starming.serialqueue”,&nbsp;DISPATCH_QUEUE_SERIAL)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//并行队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_create(“com.starming.concurrentqueue”,&nbsp;DISPATCH_QUEUE_CONCURRENT)</span></span></div></pre><ul><br><li>同步异步线程创建</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//同步线程</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_sync(…,&nbsp;^(block))</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//异步线程</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(…,&nbsp;^(block))</span></span></div></pre><h2>队列（dispatch queue）</h2><br><ul><br><li>Serial：又叫private dispatch queues，同时只执行一个任务。Serial queue常用于同步访问特定的资源或数据。当你创建多个Serial queue时，虽然各自是同步，但serial queue之间是并发执行。</li><br><li>Main dispatch queue：全局可用的serial queue，在应用程序主线程上执行任务。</li><br><li>Concurrent：又叫global dispatch queue，可以并发的执行多个任务，但执行完成顺序是随机的。系统提供四个全局并发队列，这四个队列有这对应的优先级，用户是不能够创建全局队列的，只能获取。</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dipatch_queue_t&nbsp;queue;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>queue&nbsp;=&nbsp;dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);</span></span></div></pre><ul><br><li>user create queue：创建自己定义的队列，可以用dispatch_queue_create函数，函数有两个参数，第一个自定义的队列名，第二个参数是队列类型，默认NULL或者DISPATCH_QUEUE_SERIAL的是串行，参数为DISPATCH_QUEUE_CONCURRENT为并行队列。</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_t&nbsp;queue</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>queue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.concurrentqueue”,&nbsp;DISPATCH_QUEUE_CONCURRENT);</span></span></div></pre><ul><br><li>自定义队列的优先级：可以通过dipatch_queue_attr_make_with_qos_class或dispatch_set_target_queue方法设置队列的优先级</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//dipatch_queue_attr_make_with_qos_class</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_attr_t&nbsp;attr&nbsp;=&nbsp;dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,&nbsp;QOS_CLASS_UTILITY,&nbsp;-1);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_t&nbsp;queue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.qosqueue”,&nbsp;attr);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//dispatch_set_target_queue</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_t&nbsp;queue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.settargetqueue”,NULL);&nbsp;//需要设置优先级的queue</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_t&nbsp;referQueue&nbsp;=&nbsp;dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,&nbsp;0);&nbsp;//参考优先级</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_set_target_queue(queue,&nbsp;referQueue);&nbsp;//设置queue和referQueue的优先级一样</span></span></div></pre><ul><br><li>dispatch_set_target_queue：可以设置优先级，也可以设置队列层级体系，比如让多个串行和并行队列在统一一个串行队列里串行执行，如下</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_t&nbsp;serialQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.serialqueue”,&nbsp;DISPATCH_QUEUE_SERIAL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_t&nbsp;firstQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.firstqueue”,&nbsp;DISPATCH_QUEUE_SERIAL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_t&nbsp;secondQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.secondqueue”,&nbsp;DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_set_target_queue(firstQueue,&nbsp;serialQueue);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_set_target_queue(secondQueue,&nbsp;serialQueue);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(firstQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:3.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(secondQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:2.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(secondQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”3”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:1.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div></pre><h2>队列类型</h2><br><p>队列默认是串行的，如果设置改参数为NULL会按串行处理，只能执行一个单独的block，队列也可以是并行的，同一时间执行多个block</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(id)init;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self&nbsp;=&nbsp;[super&nbsp;init];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self&nbsp;!=&nbsp;nil)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;<em>label&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@”%@.isolation.%p”,&nbsp;[self&nbsp;class],&nbsp;self];</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.isolationQueue&nbsp;=&nbsp;dispatch_queue_create([label&nbsp;UTF8String],&nbsp;0);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@”%@.work.%p”,&nbsp;[self&nbsp;class],&nbsp;self];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.workQueue&nbsp;=&nbsp;dispatch_queue_create([label&nbsp;UTF8String],&nbsp;0);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;self;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>5种队列，主队列（main queue）,四种通用调度队列，自己定制的队列。四种通用调度队列为</p><br><ul><br><li>QOS_CLASS_USER_INTERACTIVE：user interactive等级表示任务需要被立即执行提供好的体验，用来更新UI，响应事件等。这个等级最好保持小规模。</li><br><li>QOS_CLASS_USER_INITIATED：user initiated等级表示任务由UI发起异步执行。适用场景是需要及时结果同时又可以继续交互的时候。</li><br><li>QOS_CLASS_UTILITY：utility等级表示需要长时间运行的任务，伴有用户可见进度指示器。经常会用来做计算，I/O，网络，持续的数据填充等任务。这个任务节能。</li><br><li>QOS_CLASS_BACKGROUND：background等级表示用户不会察觉的任务，使用它来处理预加载，或者不需要用户交互和对时间不敏感的任务。<br>示例：后台加载显示图片</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>override&nbsp;func&nbsp;viewDidLoad()&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;super.viewDidLoad()</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.value),&nbsp;0))&nbsp;{&nbsp;//&nbsp;将工作从主线程转移到全局队列中，这是dispatch_async调用，异步提交保证调用线程会继续执行下去，这样viewDidLoad在主线程上能够更早完成，</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;overlayImage&nbsp;=&nbsp;self.faceOverlayImageFromImage(self.image)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_main_queue())&nbsp;{&nbsp;//&nbsp;新图完成，把一个闭包加入主线程用来更新UIImageView，只有在主线程能操作UIKit。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.fadeInNewImage(overlayImage)&nbsp;//&nbsp;更新UI</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>何时使用何种队列类型</p><br><ul><br><li>主队列（顺序）：队列中有任务完成需要更新UI时，dispatch_after在这种类型中使用。</li><br><li>并发队列：用来执行与UI无关的后台任务，dispatch_sync放在这里，方便等待任务完成进行后续处理或和dispatch barrier同步。dispatch groups放在这里也不错。</li><br><li>自定义顺序队列：顺序执行后台任务并追踪它时。这样做同时只有一个任务在执行可以防止资源竞争。dipatch barriers解决读写锁问题的放在这里处理。dispatch groups也是放在这里。<br>可以使用下面的方法简化QoS等级参数的写法</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>var&nbsp;GlobalMainQueue:&nbsp;dispatch_queue_t&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;dispatch_get_main_queue()</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>var&nbsp;GlobalUserInteractiveQueue:&nbsp;dispatch_queue_t&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.value),&nbsp;0)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>var&nbsp;GlobalUserInitiatedQueue:&nbsp;dispatch_queue_t&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.value),&nbsp;0)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>var&nbsp;GlobalUtilityQueue:&nbsp;dispatch_queue_t&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;dispatch_get_global_queue(Int(QOS_CLASS_UTILITY.value),&nbsp;0)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>var&nbsp;GlobalBackgroundQueue:&nbsp;dispatch_queue_t&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.value),&nbsp;0)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//使用起来就是这样，易读而且容易看出在使用哪个队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(GlobalUserInitiatedQueue)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;overlayImage&nbsp;=&nbsp;self.faceOverlayImageFromImage(self.image)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(GlobalMainQueue)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.fadeInNewImage(overlayImage)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>dispatch_once用法</h2><br><p>dispatch_once_t要是全局或static变量，保证dispatch_once_t只有一份实例</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>+&nbsp;(UIColor&nbsp;)boringColor;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;UIColor&nbsp;<em>color;</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//只运行一次</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;dispatch_once_t&nbsp;onceToken;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_once(&amp;onceToken,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color&nbsp;=&nbsp;[UIColor&nbsp;colorWithRed:0.380f&nbsp;green:0.376f&nbsp;blue:0.376f&nbsp;alpha:1.000f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;color;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>dispatch_async</h2><br><p>设计一个异步的API调用dispatch_async()，这个调用放在API的方法或函数中做。让API的使用者设置一个回调处理队列</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)processImage:(UIImage&nbsp;)image&nbsp;completionHandler:(void(^)(BOOL&nbsp;success))handler;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(self.isolationQueue,&nbsp;^(void){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;do&nbsp;actual&nbsp;processing&nbsp;here</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(self.resultQueue,&nbsp;^(void){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler(YES);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>可以避免界面会被一些耗时的操作卡死，比如读取网络数据，大数据IO，还有大量数据的数据库读写，这时需要在另一个线程中处理，然后通知主线程更新界面，GCD使用起来比NSThread和NSOperation方法要简单方便。</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//代码框架</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,&nbsp;0),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;耗时的操作</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_main_queue(),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;更新界面</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//下载图片的示例</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,&nbsp;0),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSURL&nbsp;<em>&nbsp;url&nbsp;=&nbsp;[NSURL&nbsp;URLWithString:@”</em></span><span class="syntax--markup syntax--underline syntax--link syntax--http syntax--hyperlink"><span><a href="http://avatar.csdn.net/2/C/D/1_totogo2010.jpg" target="_blank" rel="external">http://avatar.csdn.net/2/C/D/1_totogo2010.jpg</a></span></span><span>“];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSData&nbsp;&nbsp;data&nbsp;=&nbsp;[[NSData&nbsp;alloc]initWithContentsOfURL:url];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UIImage&nbsp;<em>image&nbsp;=&nbsp;[[UIImage&nbsp;alloc]initWithData:data];</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(data&nbsp;!=&nbsp;nil)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_main_queue(),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.imageView.image&nbsp;=&nbsp;image;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div></pre><h2>dispatch_after延后执行</h2><br><p>dispatch_after只是延时提交block，不是延时立刻执行。</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)foo</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;delayInSeconds&nbsp;=&nbsp;2.0;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_time_t&nbsp;popTime&nbsp;=&nbsp;dispatch_time(DISPATCH_TIME_NOW,&nbsp;(int64_t)&nbsp;(delayInSeconds&nbsp;&nbsp;NSEC_PER_SEC));</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_after(popTime,&nbsp;dispatch_get_main_queue(),&nbsp;^(void){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;bar];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>范例，实现一个推迟出现弹出框提示，比如说提示用户评价等功能。</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>func&nbsp;showOrHideNavPrompt()&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;delayInSeconds&nbsp;=&nbsp;1.0</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;popTime&nbsp;=&nbsp;dispatch_time(DISPATCH_TIME_NOW,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Int64(delayInSeconds&nbsp;<em>&nbsp;Double(NSEC_PER_SEC)))&nbsp;//&nbsp;在这里声明推迟的时间</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_after(popTime,&nbsp;GlobalMainQueue)&nbsp;{&nbsp;//&nbsp;等待delayInSeconds将闭包异步到主队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;count&nbsp;=&nbsp;PhotoManager.sharedManager.photos.count</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;count&nbsp;&gt;&nbsp;0&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.navigationItem.prompt&nbsp;=&nbsp;nil</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.navigationItem.prompt&nbsp;=&nbsp;”Add&nbsp;photos&nbsp;with&nbsp;faces&nbsp;to&nbsp;Googlyify&nbsp;them!”</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>例子中的dispatch time的参数，可以先看看函数原型</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_time_t&nbsp;dispatch_time&nbsp;(&nbsp;dispatch_time_t&nbsp;when,&nbsp;int64_t&nbsp;delta&nbsp;);</span></span></div></pre><p>第一个参数为DISPATCH_TIME_NOW表示当前。第二个参数的delta表示纳秒，一秒对应的纳秒为1000000000，系统提供了一些宏来简化</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;#define&nbsp;NSEC_PER_SEC&nbsp;1000000000ull&nbsp;//每秒有多少纳秒</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;#define&nbsp;USEC_PER_SEC&nbsp;1000000ull&nbsp;&nbsp;&nbsp;&nbsp;//每秒有多少毫秒</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;#define&nbsp;NSEC_PER_USEC&nbsp;1000ull&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//每毫秒有多少纳秒</span></span></div></pre><p>这样如果要表示一秒就可以这样写</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_time(DISPATCH_TIME_NOW,&nbsp;1&nbsp;&nbsp;NSEC_PER_SEC);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_time(DISPATCH_TIME_NOW,&nbsp;1000&nbsp;<em>&nbsp;USEC_PER_SEC);</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_time(DISPATCH_TIME_NOW,&nbsp;USEC_PER_SEC&nbsp;&nbsp;NSEC_PER_USEC);</span></span></div></pre><h2>dispatch_barrier_async使用Barrier Task方法Dispatch Barrier解决多线程并发读写同一个资源发生死锁</h2><br><p>Dispatch Barrier确保提交的闭包是指定队列中在特定时段唯一在执行的一个。在所有先于Dispatch Barrier的任务都完成的情况下这个闭包才开始执行。轮到这个闭包时barrier会执行这个闭包并且确保队列在此过程不会执行其它任务。闭包完成后队列恢复。需要注意dispatch_barrier_async只在自己创建的队列上有这种作用，在全局并发队列和串行队列上，效果和dispatch_sync一样</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//创建队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>self.isolationQueue&nbsp;=&nbsp;dispatch_queue_create([label&nbsp;UTF8String],&nbsp;DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//改变setter</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)setCount:(NSUInteger)count&nbsp;forKey:(NSString&nbsp;<em>)key</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key&nbsp;=&nbsp;[key&nbsp;copy];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//确保所有barrier都是async异步的</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_barrier_async(self.isolationQueue,&nbsp;^(){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(count&nbsp;==&nbsp;0)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.counts&nbsp;removeObjectForKey:key];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.counts[key]&nbsp;=&nbsp;@(count);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchBarrierAsyncDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//防止文件读写冲突，可以创建一个串行队列，操作都在这个队列中进行，没有更新数据读用并行，写用串行。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;dataQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.dataqueue”,&nbsp;DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dataQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:2.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”read&nbsp;data&nbsp;1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dataQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”read&nbsp;data&nbsp;2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//等待前面的都完成，在执行barrier后面的</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_barrier_async(dataQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”write&nbsp;data&nbsp;1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:1];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dataQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:1.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”read&nbsp;data&nbsp;3”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dataQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”read&nbsp;data&nbsp;4”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>swift示例</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//使用dispatch_queue_create初始化一个并发队列。第一个参数遵循反向DNS命名习惯，方便描述，第二个参数是指出是并发还是顺序。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>private&nbsp;let&nbsp;concurrentPhotoQueue&nbsp;=&nbsp;dispatch_queue_create(</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>“com.raywenderlich.GooglyPuff.photoQueue”,&nbsp;DISPATCH_QUEUE_CONCURRENT)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>func&nbsp;addPhoto(photo:&nbsp;Photo)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_barrier_async(concurrentPhotoQueue)&nbsp;{&nbsp;//&nbsp;将写操作加入到自定义的队列。开始执行时这个就是队列中唯一的一个在执行的任务。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self._photos.append(photo)&nbsp;//&nbsp;barrier能够保障不会和其他任务同时进行。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(GlobalMainQueue)&nbsp;{&nbsp;//&nbsp;涉及到UI所以这个通知应该在主线程中，所以分派另一个异步任务到主队列中。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.postContentAddedNotification()</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//上面是解决了写可能发生死锁，下面是使用dispatch_sync解决读时可能会发生的死锁。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>var&nbsp;photos:&nbsp;[Photo]&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;photosCopy:&nbsp;[Photo]!</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_sync(concurrentPhotoQueue)&nbsp;{&nbsp;//&nbsp;同步调度到concurrentPhotoQueue队列执行读操作</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photosCopy&nbsp;=&nbsp;self._photos&nbsp;//&nbsp;保存</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;photosCopy</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//这样读写问题都解决了。</span></span></div></pre><p>都用异步处理避免死锁，异步的缺点在于调试不方便，但是比起同步容易产生死锁这个副作用还算小的。</p><br><h2>dispatch_apply进行快速迭代</h2><br><p>类似for循环，但是在并发队列的情况下dispatch_apply会并发执行block任务。</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>for&nbsp;(size_t&nbsp;y&nbsp;=&nbsp;0;&nbsp;y&nbsp;&lt;&nbsp;height;&nbsp;++y)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(size_t&nbsp;x&nbsp;=&nbsp;0;&nbsp;x&nbsp;&lt;&nbsp;width;&nbsp;++x)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Do&nbsp;something&nbsp;with&nbsp;x&nbsp;and&nbsp;y&nbsp;here</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//因为可以并行执行，所以使用dispatch_apply可以运行的更快</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchApplyDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;concurrentQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.concurrentqueue”,&nbsp;DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_apply(10,&nbsp;concurrentQueue,&nbsp;^(size_t&nbsp;i)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”%zu”,i);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”The&nbsp;end”);&nbsp;//这里有个需要注意的是，dispatch_apply这个是会阻塞主线程的。这个log打印会在dispatch_apply都结束后才开始执行</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>dispatch_apply能避免线程爆炸，因为GCD会管理并发</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dealWiththreadWithMaybeExplode:(BOOL)explode&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;concurrentQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.concurrentqueue”,DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(explode)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//有问题的情况，可能会死锁</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(int&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;999&nbsp;;&nbsp;i++)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(concurrentQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”wrong&nbsp;%d”,i);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//do&nbsp;something&nbsp;hard</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//会优化很多，能够利用GCD管理</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_apply(999,&nbsp;concurrentQueue,&nbsp;^(size_t&nbsp;i){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”correct&nbsp;%zu”,i);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//do&nbsp;something&nbsp;hard</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>示例：</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>func&nbsp;downloadPhotosWithCompletion(completion:&nbsp;BatchPhotoDownloadingCompletionClosure?)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;storedError:&nbsp;NSError!</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;downloadGroup&nbsp;=&nbsp;dispatch_group_create()</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;addresses&nbsp;=&nbsp;[OverlyAttachedGirlfriendURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SuccessKidURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LotsOfFacesURLString]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_apply(UInt(addresses.count),&nbsp;GlobalUserInitiatedQueue)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i&nbsp;in</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;index&nbsp;=&nbsp;Int(i)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;address&nbsp;=&nbsp;addresses[index]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;url&nbsp;=&nbsp;NSURL(string:&nbsp;address)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_enter(downloadGroup)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;photo&nbsp;=&nbsp;DownloadPhoto(url:&nbsp;url!)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image,&nbsp;error&nbsp;in</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;error&nbsp;=&nbsp;error&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storedError&nbsp;=&nbsp;error</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_leave(downloadGroup)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PhotoManager.sharedManager.addPhoto(photo)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_notify(downloadGroup,&nbsp;GlobalMainQueue)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;completion&nbsp;=&nbsp;completion&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completion(error:&nbsp;storedError)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>Block组合Dispatch_groups</h2><br><p>dispatch groups是专门用来监视多个异步任务。dispatch_group_t实例用来追踪不同队列中的不同任务。</p><br><p>当group里所有事件都完成GCD API有两种方式发送通知，第一种是dispatch_group_wait，会阻塞当前进程，等所有任务都完成或等待超时。第二种方法是使用dispatch_group_notify，异步执行闭包，不会阻塞。</p><br><p>第一种使用dispatch_group_wait的swift的例子：</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>func&nbsp;downloadPhotosWithCompletion(completion:&nbsp;BatchPhotoDownloadingCompletionClosure?)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(GlobalUserInitiatedQueue)&nbsp;{&nbsp;//&nbsp;因为dispatch_group_wait会租塞当前进程，所以要使用dispatch_async将整个方法要放到后台队列才能够保证主线程不被阻塞</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;storedError:&nbsp;NSError!</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;downloadGroup&nbsp;=&nbsp;dispatch_group_create()&nbsp;//&nbsp;创建一个dispatch&nbsp;group</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;address&nbsp;in&nbsp;[OverlyAttachedGirlfriendURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SuccessKidURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LotsOfFacesURLString]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;url&nbsp;=&nbsp;NSURL(string:&nbsp;address)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_enter(downloadGroup)&nbsp;//&nbsp;dispatch_group_enter是通知dispatch&nbsp;group任务开始了，dispatch_group_enter和dispatch_group_leave是成对调用，不然程序就崩溃了。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;photo&nbsp;=&nbsp;DownloadPhoto(url:&nbsp;url!)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image,&nbsp;error&nbsp;in</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;error&nbsp;=&nbsp;error&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storedError&nbsp;=&nbsp;error</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_leave(downloadGroup)&nbsp;//&nbsp;保持和dispatch_group_enter配对。通知任务已经完成</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PhotoManager.sharedManager.addPhoto(photo)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_wait(downloadGroup,&nbsp;DISPATCH_TIME_FOREVER)&nbsp;//&nbsp;dispatch_group_wait等待所有任务都完成直到超时。如果任务完成前就超时了，函数会返回一个非零值，可以通过返回值判断是否超时。也可以用DISPATCH_TIME_FOREVER表示一直等。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(GlobalMainQueue)&nbsp;{&nbsp;//&nbsp;这里可以保证所有图片任务都完成，然后在main&nbsp;queue里加入完成后要处理的闭包，会在main&nbsp;queue里执行。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;completion&nbsp;=&nbsp;completion&nbsp;{&nbsp;//&nbsp;执行闭包内容</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completion(error:&nbsp;storedError)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>oc例子</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchGroupWaitDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;concurrentQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.concurrentqueue”,DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_t&nbsp;group&nbsp;=&nbsp;dispatch_group_create();</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//在group中添加队列的block</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;concurrentQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:2.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;concurrentQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_wait(group,&nbsp;DISPATCH_TIME_FOREVER);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”go&nbsp;on”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>第二种使用dispatch_group_notify的swift的例子：</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>func&nbsp;downloadPhotosWithCompletion(completion:&nbsp;BatchPhotoDownloadingCompletionClosure?)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;不用加dispatch_async，因为没有阻塞主进程</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;storedError:&nbsp;NSError!</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;downloadGroup&nbsp;=&nbsp;dispatch_group_create()</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;address&nbsp;in&nbsp;[OverlyAttachedGirlfriendURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SuccessKidURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LotsOfFacesURLString]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;url&nbsp;=&nbsp;NSURL(string:&nbsp;address)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_enter(downloadGroup)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;photo&nbsp;=&nbsp;DownloadPhoto(url:&nbsp;url!)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image,&nbsp;error&nbsp;in</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;error&nbsp;=&nbsp;error&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storedError&nbsp;=&nbsp;error</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_leave(downloadGroup)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PhotoManager.sharedManager.addPhoto(photo)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_notify(downloadGroup,&nbsp;GlobalMainQueue)&nbsp;{&nbsp;//&nbsp;dispatch_group_notify和dispatch_group_wait的区别就是是异步执行闭包的，当dispatch&nbsp;groups中没有剩余的任务时闭包才执行。这里是指明在主队列中执行。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;completion&nbsp;=&nbsp;completion&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completion(error:&nbsp;storedError)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>oc例子</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//dispatch_group_notify</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchGroupNotifyDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;concurrentQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.concurrentqueue”,DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_t&nbsp;group&nbsp;=&nbsp;dispatch_group_create();</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;concurrentQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;concurrentQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_notify(group,&nbsp;dispatch_get_main_queue(),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”end”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”can&nbsp;continue”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//dispatch_group_wait</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchGroupWaitDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;concurrentQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.concurrentqueue”,DISPATCH_QUEUE_CONCURRENT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_t&nbsp;group&nbsp;=&nbsp;dispatch_group_create();</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//在group中添加队列的block</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;concurrentQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:2.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;concurrentQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_wait(group,&nbsp;DISPATCH_TIME_FOREVER);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”can&nbsp;continue”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>如何对现有API使用dispatch_group_t</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//给Core&nbsp;Data的-performBlock:添加groups。组合完成任务后使用dispatch_group_notify来运行一个block即可。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)withGroup:(dispatch_group_t)group&nbsp;performBlock:(dispatch_block_t)block</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(group&nbsp;==&nbsp;NULL)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;performBlock:block];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_enter(group);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;performBlock:^(){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block();</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_leave(group);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//NSURLConnection也可以这样做</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>+&nbsp;(void)withGroup:(dispatch_group_t)group</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendAsynchronousRequest:(NSURLRequest&nbsp;)request</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queue:(NSOperationQueue&nbsp;<em>)queue</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completionHandler:(void&nbsp;(^)(NSURLResponse,&nbsp;NSData<em>,&nbsp;NSError</em>))handler</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(group&nbsp;==&nbsp;NULL)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;sendAsynchronousRequest:request</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queue:queue</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completionHandler:handler];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_enter(group);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;sendAsynchronousRequest:request</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queue:queue</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completionHandler:^(NSURLResponse&nbsp;<em>response,&nbsp;NSData&nbsp;</em>data,&nbsp;NSError&nbsp;<em>error){</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler(response,&nbsp;data,&nbsp;error);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_leave(group);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><p>注意事项</p><br><ul><br><li>dispatch_group_async等价于dispatch_group_enter() 和 dispatch_group_leave()的组合。</li><br><li>dispatch_group_enter() 必须运行在 dispatch_group_leave() 之前。</li><br><li>dispatch_group_enter() 和 dispatch_group_leave() 需要成对出现的</li><br></ul><br><h2>Dispatch Block</h2><br><p>队列执行任务都是block的方式，</p><br><ul><br><li>创建block<br><code>&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;(void)createDispatchBlock {
+  //normal way
+  dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.starming.gcddemo.concurrentqueue&quot;,DISPATCH_QUEUE_CONCURRENT);
+  dispatch_block_t block = dispatch_block_create(0, ^{&lt;/p&gt;
+&lt;pre class=&quot;editor-colors lang-&quot;&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;syntax--text syntax--plain syntax--null-grammar&quot;&gt;&lt;span&gt;&amp;nbsp;&amp;nbsp;NSLog(@&quot;run&amp;nbsp;block&quot;);&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;p&gt;  });
+  dispatch_async(concurrentQueue, block);&lt;/p&gt;
+&lt;p&gt;  //QOS way
+  dispatch_block_t qosBlock = dispatch_block_create_with_qos_class(0, QOS_CLASS_USER_INITIATED, -1, ^{&lt;/p&gt;
+&lt;pre class=&quot;editor-colors lang-&quot;&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;syntax--text syntax--plain syntax--null-grammar&quot;&gt;&lt;span&gt;&amp;nbsp;&amp;nbsp;NSLog(@&quot;run&amp;nbsp;qos&amp;nbsp;block&quot;);&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;p&gt;  });
+  dispatch_async(concurrentQueue, qosBlock);
+}</code><p></p><br></li><br><li>dispatch_block_wait：可以根据dispatch block来设置等待时间，参数DISPATCH_TIME_FOREVER会一直等待block结束</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchBlockWaitDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;serialQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.serialqueue”,&nbsp;DISPATCH_QUEUE_SERIAL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_t&nbsp;block&nbsp;=&nbsp;dispatch_block_create(0,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”star”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:5.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”end”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(serialQueue,&nbsp;block);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//设置DISPATCH_TIME_FOREVER会一直等到前面任务都完成</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_wait(block,&nbsp;DISPATCH_TIME_FOREVER);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”ok,&nbsp;now&nbsp;can&nbsp;go&nbsp;on”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><ul><br><li>dispatch_block_notify：可以监视指定dispatch block结束，然后再加入一个block到队列中。三个参数分别为，第一个是需要监视的block，第二个参数是需要提交执行的队列，第三个是待加入到队列中的block</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchBlockNotifyDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;serialQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.serialqueue”,&nbsp;DISPATCH_QUEUE_SERIAL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_t&nbsp;firstBlock&nbsp;=&nbsp;dispatch_block_create(0,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”first&nbsp;block&nbsp;start”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:2.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”first&nbsp;block&nbsp;end”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(serialQueue,&nbsp;firstBlock);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_t&nbsp;secondBlock&nbsp;=&nbsp;dispatch_block_create(0,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”second&nbsp;block&nbsp;run”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//first&nbsp;block执行完才在serial&nbsp;queue中执行second&nbsp;block</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_notify(firstBlock,&nbsp;serialQueue,&nbsp;secondBlock);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><ul><br><li>dispatch_block_cancel：iOS8后GCD支持对dispatch block的取消</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchBlockCancelDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;serialQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.serialqueue”,&nbsp;DISPATCH_QUEUE_SERIAL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_t&nbsp;firstBlock&nbsp;=&nbsp;dispatch_block_create(0,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”first&nbsp;block&nbsp;start”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:2.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”first&nbsp;block&nbsp;end”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_t&nbsp;secondBlock&nbsp;=&nbsp;dispatch_block_create(0,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”second&nbsp;block&nbsp;run”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(serialQueue,&nbsp;firstBlock);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(serialQueue,&nbsp;secondBlock);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//取消secondBlock</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_cancel(secondBlock);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>使用dispatch block object（调度块）在任务执行前进行取消</h2><br><p>dispatch block object可以为队列中的对象设置 示例，下载图片中途进行取消</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>func&nbsp;downloadPhotosWithCompletion(completion:&nbsp;BatchPhotoDownloadingCompletionClosure?)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;storedError:&nbsp;NSError!</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;downloadGroup&nbsp;=&nbsp;dispatch_group_create()</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;addresses&nbsp;=&nbsp;[OverlyAttachedGirlfriendURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SuccessKidURLString,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LotsOfFacesURLString]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addresses&nbsp;+=&nbsp;addresses&nbsp;+&nbsp;addresses&nbsp;//&nbsp;扩展address数组，复制3份</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;blocks:&nbsp;[dispatch_block_t]&nbsp;=&nbsp;[]&nbsp;//&nbsp;一个保存block的数组</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;i&nbsp;in&nbsp;0&nbsp;..&lt;&nbsp;addresses.count&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_enter(downloadGroup)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;block&nbsp;=&nbsp;dispatch_block_create(DISPATCH_BLOCK_INHERIT_QOS_CLASS)&nbsp;{&nbsp;//&nbsp;创建一个block，block的标志是DISPATCH_BLOCK_INHERIT_QOS_CLASS</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;index&nbsp;=&nbsp;Int(i)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;address&nbsp;=&nbsp;addresses[index]</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;url&nbsp;=&nbsp;NSURL(string:&nbsp;address)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;photo&nbsp;=&nbsp;DownloadPhoto(url:&nbsp;url!)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image,&nbsp;error&nbsp;in</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;error&nbsp;=&nbsp;error&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storedError&nbsp;=&nbsp;error</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_leave(downloadGroup)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PhotoManager.sharedManager.addPhoto(photo)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blocks.append(block)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(GlobalMainQueue,&nbsp;block)&nbsp;//&nbsp;把这个block放到GlobalMainQueue上异步调用。因为全局队列是一个顺序队列所以方便取消对象block，同时可以保证下载任务在downloadPhotosWithCompletion返回后才开始执行。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;block&nbsp;in&nbsp;blocks[3&nbsp;..&lt;&nbsp;blocks.count]&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;cancel&nbsp;=&nbsp;arc4random_uniform(2)&nbsp;//&nbsp;随机返回一个整数，会返回0或1</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;cancel&nbsp;==&nbsp;1&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_block_cancel(block)&nbsp;//&nbsp;如果是1就取消block，这个只能发生在block还在队列中并没有开始的情况下。因为把block已经放到了GlobalMainQueue中，所以这个地方会先执行，执行完了才会执行block。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_leave(downloadGroup)&nbsp;//&nbsp;因为已经dispatch_group_enter了，所以取消时也要将其都leave掉。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_notify(downloadGroup,&nbsp;GlobalMainQueue)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;let&nbsp;completion&nbsp;=&nbsp;completion&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completion(error:&nbsp;storedError)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>Dispatch IO 文件操作</h2><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch&nbsp;io读取文件的方式类似于下面的方式，多个线程去读取文件的切片数据，对于大的数据文件这样会比单线程要快很多。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(queue,^{/read&nbsp;0-99&nbsp;bytes<em>/});</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(queue,^{/read&nbsp;100-199&nbsp;bytes<em>/});</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_async(queue,^{/read&nbsp;200-299&nbsp;bytes<em>/});</em></span></span></div></pre><ul><br><li>dispatch_io_create：创建dispatch io</li><br><li>dispatch_io_set_low_water：指定切割文件大小</li><br><li>dispatch_io_read：读取切割的文件然后合并。<br>苹果系统日志API里用到了这个技术，可以在这里查看：<a href="https://github.com/Apple-FOSS-Mirror/Libc/blob/2ca2ae74647714acfc18674c3114b1a5d3325d7d/gen/asl.c" target="_blank" rel="external">https://github.com/Apple-FOSS-Mirror/Libc/blob/2ca2ae74647714acfc18674c3114b1a5d3325d7d/gen/asl.c</a></li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>pipe_q&nbsp;=&nbsp;dispatch_queue_create(“PipeQ”,&nbsp;NULL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//创建</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>pipe_channel&nbsp;=&nbsp;dispatch_io_create(DISPATCH_IO_STREAM,&nbsp;fd,&nbsp;pipe_q,&nbsp;^(int&nbsp;err){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;close(fd);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>out_fd&nbsp;=&nbsp;fdpair[1];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//设置切割大小</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_io_set_low_water(pipe_channel,&nbsp;SIZE_MAX);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_io_read(pipe_channel,&nbsp;0,&nbsp;SIZE_MAX,&nbsp;pipe_q,&nbsp;^(bool&nbsp;done,&nbsp;dispatch_data_t&nbsp;pipedata,&nbsp;int&nbsp;err){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(err&nbsp;==&nbsp;0)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;size_t&nbsp;len&nbsp;=&nbsp;dispatch_data_get_size(pipedata);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(len&nbsp;&gt;&nbsp;0)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//对每次切块数据的处理</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;char&nbsp;<em>bytes&nbsp;=&nbsp;NULL;</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char&nbsp;encoded;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uint32_t&nbsp;eval;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_data_t&nbsp;md&nbsp;=&nbsp;dispatch_data_create_map(pipedata,&nbsp;(const&nbsp;void&nbsp;<em>*)&amp;bytes,&nbsp;&amp;len);</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;encoded&nbsp;=&nbsp;asl_core_encode_buffer(bytes,&nbsp;len);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asl_msg_set_key_val(aux,&nbsp;ASL_KEY_AUX_DATA,&nbsp;encoded);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;free(encoded);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eval&nbsp;=&nbsp;_asl_evaluate_send(NULL,&nbsp;(aslmsg)aux,&nbsp;-1);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_asl_send_message(NULL,&nbsp;eval,&nbsp;aux,&nbsp;NULL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asl_msg_release(aux);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_release(md);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(done)</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//semaphore&nbsp;+1使得不需要再等待继续执行下去。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_semaphore_signal(sem);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_release(pipe_channel);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_release(pipe_q);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div></pre><h2>Dispatch Source 用GCD监视进程</h2><br><p>Dispatch Source用于监听系统的底层对象，比如文件描述符，Mach端口，信号量等。主要处理的事件如下表</p><br><table><br><thead><br><tr><br><th>方法</th><br><th style="text-align:center">说明</th><br></tr><br></thead><br><tbody><br><tr><br><td>DISPATCH_SOURCE_TYPE_DATA_ADD</td><br><td style="text-align:center">数据增加</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_DATA_OR</td><br><td style="text-align:center">数据OR</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_MACH_SEND</td><br><td style="text-align:center">Mach端口发送</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_MACH_RECV</td><br><td style="text-align:center">Mach端口接收</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_MEMORYPRESSURE</td><br><td style="text-align:center">内存情况</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_PROC</td><br><td style="text-align:center">进程事件</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_READ</td><br><td style="text-align:center">读数据</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_SIGNAL</td><br><td style="text-align:center">信号</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_TIMER</td><br><td style="text-align:center">定时器</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_VNODE</td><br><td style="text-align:center">文件系统变化</td><br></tr><br><tr><br><td>DISPATCH_SOURCE_TYPE_WRITE</td><br><td style="text-align:center">文件写入</td><br></tr><br></tbody><br></table><br><p>方法</p><br><ul><br><li>dispatch_source_create：创建dispatch source，创建后会处于挂起状态进行事件接收，需要设置事件处理handler进行事件处理。</li><br><li>dispatch_source_set_event_handler：设置事件处理handler</li><br><li>dispatch_source_set_cancel_handler：事件取消handler，就是在dispatch source释放前做些清理的事。</li><br><li>dispatch_source_cancel：关闭dispatch source，设置的事件处理handler不会被执行，已经执行的事件handler不会取消。</li><br></ul><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>NSRunningApplication&nbsp;mail&nbsp;=&nbsp;[NSRunningApplication&nbsp;runningApplicationsWithBundleIdentifier:@”com.apple.mail”];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>if&nbsp;(mail&nbsp;==&nbsp;nil)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>pid_t&nbsp;const&nbsp;pid&nbsp;=&nbsp;mail.processIdentifier;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>self.source&nbsp;=&nbsp;dispatch_source_create(DISPATCH_SOURCE_TYPE_PROC,&nbsp;pid,&nbsp;DISPATCH_PROC_EXIT,&nbsp;DISPATCH_TARGET_QUEUE_DEFAULT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_source_set_event_handler(self.source,&nbsp;^(){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”Mail&nbsp;quit.”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//在事件源传到你的事件处理前需要调用dispatch_resume()这个方法</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_resume(self.source);</span></span></div></pre><p>监视文件夹内文件变化</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>NSURL&nbsp;<em>directoryURL;&nbsp;//&nbsp;assume&nbsp;this&nbsp;is&nbsp;set&nbsp;to&nbsp;a&nbsp;directory</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>int&nbsp;const&nbsp;fd&nbsp;=&nbsp;open([[directoryURL&nbsp;path]&nbsp;fileSystemRepresentation],&nbsp;O_EVTONLY);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>if&nbsp;(fd&nbsp;&lt;&nbsp;0)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;char&nbsp;buffer[80];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strerror_r(errno,&nbsp;buffer,&nbsp;sizeof(buffer));</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”Unable&nbsp;to&nbsp;open&nbsp;\”%@\”:&nbsp;%s&nbsp;(%d)”,&nbsp;[directoryURL&nbsp;path],&nbsp;buffer,&nbsp;errno);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_source_t&nbsp;source&nbsp;=&nbsp;dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,&nbsp;fd,</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>DISPATCH_VNODE_WRITE&nbsp;|&nbsp;DISPATCH_VNODE_DELETE,&nbsp;DISPATCH_TARGET_QUEUE_DEFAULT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_source_set_event_handler(source,&nbsp;^(){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned&nbsp;long&nbsp;const&nbsp;data&nbsp;=&nbsp;dispatch_source_get_data(source);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(data&nbsp;&amp;&nbsp;DISPATCH_VNODE_WRITE)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”The&nbsp;directory&nbsp;changed.”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(data&nbsp;&amp;&nbsp;DISPATCH_VNODE_DELETE)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”The&nbsp;directory&nbsp;has&nbsp;been&nbsp;deleted.”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_source_set_cancel_handler(source,&nbsp;^(){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close(fd);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>self.source&nbsp;=&nbsp;source;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_resume(self.source);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//还要注意需要用DISPATCH_VNODE_DELETE&nbsp;去检查监视的文件或文件夹是否被删除，如果删除了就停止监听</span></span></div></pre><p>NSTimer在主线程的runloop里会在runloop切换其它模式时停止，这时就需要手动在子线程开启一个模式为NSRunLoopCommonModes的runloop，如果不想开启一个新的runloop可以用不跟runloop关联的dispatch source timer，如下。</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_source_t&nbsp;source&nbsp;=&nbsp;dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,0,&nbsp;0,&nbsp;DISPATCH_TARGET_QUEUE_DEFAULT);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_source_set_event_handler(source,&nbsp;^(){</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”Time&nbsp;flies.”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_time_t&nbsp;start</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_source_set_timer(source,&nbsp;DISPATCH_TIME_NOW,&nbsp;5ull&nbsp;&nbsp;NSEC_PER_SEC,100ull&nbsp;<em>&nbsp;NSEC_PER_MSEC);</em></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>self.source&nbsp;=&nbsp;source;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_resume(self.source);</span></span></div></pre><h2>Dispatch Semaphore和的介绍</h2><br><p>另外一种保证同步的方法。使用dispatch_semaphore_signal加1dispatch_semaphore_wait减1，为0时等待的设置方式来达到线程同步的目的和同步锁一样能够解决资源抢占的问题。</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//dispatch&nbsp;semaphore</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)dispatchSemaphoreDemo&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//创建semaphore</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_semaphore_t&nbsp;semaphore&nbsp;=&nbsp;dispatch_semaphore_create(0);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,&nbsp;0),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”start”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:1.f];</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”semaphore&nbsp;+1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_semaphore_signal(semaphore);&nbsp;//+1&nbsp;semaphore</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_semaphore_wait(semaphore,&nbsp;DISPATCH_TIME_FOREVER);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”continue”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>锁</h2><br><p>这里简单介绍下iOS中常用的各种锁和他们的性能。</p><br><ul><br><li>NSRecursiveLock：递归锁，可以在一个线程中反复获取锁不会造成死锁，这个过程会记录获取锁和释放锁的次数来达到何时释放的作用。</li><br><li>NSDistributedLock：分布锁，基于文件方式的锁机制，可以跨进程访问。</li><br><li>NSConditionLock：条件锁，用户定义条件，确保一个线程可以获取满足一定条件的锁。因为线程间竞争会涉及到条件锁检测，系统调用上下切换频繁导致耗时是几个锁里最长的。</li><br><li>OSSpinLock：自旋锁，不进入内核，减少上下文切换，性能最高，但抢占多时会占用较多cpu，好点多，这时使用pthread_mutex较好。</li><br><li>pthread_mutex_t：同步锁基于C语言，底层api性能高，使用方法和其它的类似。</li><br><li>@synchronized：更加简单。</li><br></ul><br><h2>dispatch_suspend和dispatch_resume挂起和恢复队列</h2><br><p>dispatch_suspend这里挂起不会暂停正在执行的block，只是能够暂停还没执行的block。</p><br><h2>dispatch_set_context和dispatch_get_context</h2><br><h3>GCD深入操作</h3><br><ul><br><li>缓冲区：dispatch_data_t基于零碎的内存区域，使用dispatch_data_apply来遍历，还可以用dispatch_data_create_subrange来创建一个不做任何拷贝的子区域</li><br><li>I/O调度：使用GCD提供的dispatch_io_read，dispatch_io_write和dispatch_io_close</li><br><li>测试：使用dispatch_benchmark小工具</li><br><li>原子操作： libkern/OSAtomic.h里可以查看那些函数，用于底层多线程编程。<h3>GCD死锁</h3><br></li><br></ul><br><p>当前串行队列里面同步执行当前串行队列就会死锁，解决的方法就是将同步的串行队列放到另外一个线程就能够解决。</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)deadLockCase1&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//主队列的同步线程，按照FIFO的原则（先入先出），2排在3后面会等3执行完，但因为同步线程，3又要等2执行完，相互等待成为死锁。</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_sync(dispatch_get_main_queue(),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”3”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)deadLockCase2&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//3会等2，因为2在全局并行队列里，不需要等待3，这样2执行完回到主队列，3就开始执行</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,&nbsp;0),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”3”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)deadLockCase3&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;serialQueue&nbsp;=&nbsp;dispatch_queue_create(“com.starming.gcddemo.serialqueue”,&nbsp;DISPATCH_QUEUE_SERIAL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(serialQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//串行队列里面同步一个串行队列就会死锁</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_sync(serialQueue,&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”3”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”4”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”5”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)deadLockCase4&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_global_queue(0,&nbsp;0),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//将同步的串行队列放到另外一个线程就能够解决</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_sync(dispatch_get_main_queue(),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”3”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”4”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”5”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)deadLockCase5&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_global_queue(0,&nbsp;0),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”1”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//回到主线程发现死循环后面就没法执行了</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_sync(dispatch_get_main_queue(),&nbsp;^{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”2”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”3”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;});</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@”4”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;//死循环</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(1)&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>GCD实际使用</h2><br><h3>FMDB如何使用dispatch_queue_set_specific和dispatch_get_specific来防止死锁</h3><br><p>作用类似objc_setAssociatedObject跟objc_getAssociatedObject</p><br><p>static const void  const kDispatchQueueSpecificKey = &amp;kDispatchQueueSpecificKey;</p><br><pre class="editor-colors lang-"><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//创建串行队列，所有数据库的操作都在这个队列里</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>_queue&nbsp;=&nbsp;dispatch_queue_create([[NSString&nbsp;stringWithFormat:@”fmdb.%@”,&nbsp;self]&nbsp;UTF8String],&nbsp;NULL);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//标记队列</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>dispatch_queue_set_specific(_queue,&nbsp;kDispatchQueueSpecificKey,&nbsp;(<strong>bridge&nbsp;void&nbsp;<em>)self,&nbsp;NULL);</em></strong></span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>//检查是否是同一个队列来避免死锁的方法</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>-&nbsp;(void)inDatabase:(void&nbsp;(^)(FMDatabase&nbsp;db))block&nbsp;{</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;FMDatabaseQueue&nbsp;*currentSyncQueue&nbsp;=&nbsp;(bridge&nbsp;id)dispatch_get_specific(kDispatchQueueSpecificKey);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>&nbsp;&nbsp;&nbsp;&nbsp;assert(currentSyncQueue&nbsp;!=&nbsp;self&nbsp;&amp;&amp;&nbsp;”inDatabase:&nbsp;was&nbsp;called&nbsp;reentrantly&nbsp;on&nbsp;the&nbsp;same&nbsp;queue,&nbsp;which&nbsp;would&nbsp;lead&nbsp;to&nbsp;a&nbsp;deadlock”);</span></span></div><div class="line"><span class="syntax--text syntax--plain syntax--null-grammar"><span>}</span></span></div></pre><h2>DTCoreText使用GCD加快解析速度</h2><br><p>DTCoreText采用的是SAX解析，iOS自带了XML/HTML的解析引擎libxml，提供了两个解析接口，DOM解析和SAX解析，前者使用简单但是占用内存多，SAX解析由于不会返回一个dom树，采用的是查到一个标签比如回调startElement方法碰到内容就回调_characters碰到类似就回调endElement这样的方式。</p><br><p>根据这种解析方式DTCoreText使用多线程解析能够更快的解析，DTHTMLAttributedStringBuilder使用三个dispatch_queue</p><br><ul><br><li>_dataParsingQueue：解析html的</li><br><li>_treeBuildingQueue：生成dom树的</li><br><li>_stringAssemblyQueue：组装NSAttributeString的 获取三个队列全部完成采用了dispatch_group的dispatch_group_wait这种阻塞同步方式来返回结果。</li><br></ul><br><h2>iOS系统版本新特性</h2><br><h3 id="ios8">iOS8</h3><br><p>iOS8新加了一个功能叫Quality of Service(QoS)，里面提供了一下几个更容易理解的枚举名来使用user interactive，user initiated，utility和background。下面的表做了对比</p><br><table><br><thead><br><tr><br><th>Global queue</th><br><th>Corresponding QoS class</th><br><th>说明</th><br></tr><br></thead><br><tbody><br><tr><br><td>Main thread</td><br><td>NSQualityOfServiceUserInteractive</td><br><td>UI相关，交互等</td><br></tr><br><tr><br><td>DISPATCH_QUEUE_PRIORITY_HIGH</td><br><td>NSQualityOfServiceUserInitiated</td><br><td>用户发起需要马上得到结果进行后续任务</td><br></tr><br><tr><br><td>DISPATCH_QUEUE_PRIORITY_DEFAULT</td><br><td>NSQualityOfServiceDefault</td><br><td>默认的不应该使用这个设置任务</td><br></tr><br><tr><br><td>DISPATCH_QUEUE_PRIORITY_LOW</td><br><td>NSQualityOfServiceUtility</td><br><td>花费时间稍多比如下载，需要几秒或几分钟的</td><br></tr><br><tr><br><td>DISPATCH_QUEUE_PRIORITY_BACKGROUND</td><br><td>NSQualityOfServiceBackground</td><br><td>不可见在后台的操作可能需要好几分钟甚至几小时的</td><br></tr><br></tbody><br></table></body><br></html>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作!</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="陶冬波 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="陶冬波 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/21/CocoaPods利用sourectree发布自己的私有库/" rel="next" title="CocoaPods利用sourectree发布自己的私有库">
+                <i class="fa fa-chevron-left"></i> CocoaPods利用sourectree发布自己的私有库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- Go to www.addthis.com/dashboard to customize your tools -->
+<div class="addthis_inline_share_toolbox">
+  <script type = "text/javascript" src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=2146550" async = "async" ></script>
+</div>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="uyan_frame"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.gif"
+                alt="陶冬波" />
+            
+              <p class="site-author-name" itemprop="name">陶冬波</p>
+              <p class="site-description motion-element" itemprop="description">90后帅哥一枚，3年多iOS开发经验，坐标深圳，欢迎热爱技术的同行一起学习，一起进步</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/bobtaocool" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/2334388710/profile?rightmod=1&wvr=6&mod=personinfo" target="_blank" title="微博">
+                    
+                      <i class="fa fa-fw fa-globe"></i>微博</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://www.jianshu.com/u/e3fdccc41282" target="_blank" title="简书">
+                    
+                      <i class="fa fa-fw fa-globe"></i>简书</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">GCD（Grand Central Dispatch） 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">GCD概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.3.</span> <span class="nav-text">队列（dispatch queue）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.4.</span> <span class="nav-text">队列类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.5.</span> <span class="nav-text">dispatch_once用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.6.</span> <span class="nav-text">dispatch_async</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.7.</span> <span class="nav-text">dispatch_after延后执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.8.</span> <span class="nav-text">dispatch_barrier_async使用Barrier Task方法Dispatch Barrier解决多线程并发读写同一个资源发生死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.9.</span> <span class="nav-text">dispatch_apply进行快速迭代</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.10.</span> <span class="nav-text">Block组合Dispatch_groups</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.11.</span> <span class="nav-text">Dispatch Block</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.12.</span> <span class="nav-text">使用dispatch block object（调度块）在任务执行前进行取消</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.13.</span> <span class="nav-text">Dispatch IO 文件操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.14.</span> <span class="nav-text">Dispatch Source 用GCD监视进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.15.</span> <span class="nav-text">Dispatch Semaphore和的介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.16.</span> <span class="nav-text">锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.17.</span> <span class="nav-text">dispatch_suspend和dispatch_resume挂起和恢复队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.18.</span> <span class="nav-text">dispatch_set_context和dispatch_get_context</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.18.1.</span> <span class="nav-text">GCD深入操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.18.2.</span> <span class="nav-text">GCD死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.19.</span> <span class="nav-text">GCD实际使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.19.1.</span> <span class="nav-text">FMDB如何使用dispatch_queue_set_specific和dispatch_get_specific来防止死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.20.</span> <span class="nav-text">DTCoreText使用GCD加快解析速度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.21.</span> <span class="nav-text">iOS系统版本新特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ios8"><span class="nav-number">1.21.1.</span> <span class="nav-text">iOS8</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陶冬波</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共8.6k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2146550"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
