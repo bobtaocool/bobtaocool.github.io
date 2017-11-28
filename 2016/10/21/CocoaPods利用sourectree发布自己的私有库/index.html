@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="1.创建Pod项目工程最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。 1.cd进入要创建项目的目录然后 执行以下命令 1234#pod lib create [项目名]$pod lib create TBFontAdjust 接着在Terminal控制台会输出5个问题： 1.What language do you">
+<meta name="description" content="创建Pod项目工程最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。 1.cd进入要创建项目的目录然后 执行以下命令 1234#pod lib create [项目名]$pod lib create TBFontAdjust 接着在Terminal控制台会输出5个问题： 1.What language do you wa">
 <meta name="keywords" content="工具">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CocoaPods利用sourectree发布自己的私有库">
 <meta property="og:url" content="http://taodongbo.cn/2016/10/21/CocoaPods利用sourectree发布自己的私有库/index.html">
 <meta property="og:site_name" content="Bob的个人博客">
-<meta property="og:description" content="1.创建Pod项目工程最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。 1.cd进入要创建项目的目录然后 执行以下命令 1234#pod lib create [项目名]$pod lib create TBFontAdjust 接着在Terminal控制台会输出5个问题： 1.What language do you">
+<meta property="og:description" content="创建Pod项目工程最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。 1.cd进入要创建项目的目录然后 执行以下命令 1234#pod lib create [项目名]$pod lib create TBFontAdjust 接着在Terminal控制台会输出5个问题： 1.What language do you wa">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-11-22T01:03:48.000Z">
+<meta property="og:updated_time" content="2017-11-28T08:55:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CocoaPods利用sourectree发布自己的私有库">
-<meta name="twitter:description" content="1.创建Pod项目工程最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。 1.cd进入要创建项目的目录然后 执行以下命令 1234#pod lib create [项目名]$pod lib create TBFontAdjust 接着在Terminal控制台会输出5个问题： 1.What language do you">
+<meta name="twitter:description" content="创建Pod项目工程最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。 1.cd进入要创建项目的目录然后 执行以下命令 1234#pod lib create [项目名]$pod lib create TBFontAdjust 接着在Terminal控制台会输出5个问题： 1.What language do you wa">
 
 
 
@@ -403,7 +403,7 @@
       
 
       
-        <h2 id="1-创建Pod项目工程"><a href="#1-创建Pod项目工程" class="headerlink" title="1.创建Pod项目工程"></a>1.创建Pod项目工程</h2><p>最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。</p>
+        <h2 id="创建Pod项目工程"><a href="#创建Pod项目工程" class="headerlink" title="创建Pod项目工程"></a>创建Pod项目工程</h2><p>最近被公司项目忙的喘不过起来，有好几天没更新博客了，但心里一直惦记着这事，回来的时候太累了，吃完饭就睡了，只能周末来更新了。。。</p>
 <p>1.cd进入要创建项目的目录然后 执行以下命令</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#pod lib create [项目名]</div><div class="line"></div><div class="line">$pod lib create TBFontAdjust</div></pre></td></tr></table></figure>
 <p>接着在Terminal控制台会输出5个问题：</p>
@@ -451,14 +451,14 @@
 <p>3.本地测试<br>打开Example工程目录Podfile文件修改下pod 的引用</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#pod &apos;MyLib&apos;, :path =&gt; &apos;../&apos; # 指定路径</div><div class="line">pod &apos;TBFontAdjust&apos;, :podspec =&gt; &apos;../TBFontAdjust.podspec&apos;</div></pre></td></tr></table></figure>
 <p> 然后在Example工程目录下执行pod update命令<br> 打开项目工程，现在可以看到库文件都被加载到Pods子项目中了.</p>
-<h2 id="2-创建私有的仓库-Spec-Repo"><a href="#2-创建私有的仓库-Spec-Repo" class="headerlink" title="2.创建私有的仓库(Spec Repo)"></a>2.创建私有的仓库(Spec Repo)</h2><p>执行以下命令:(库名，地址需和配置文件填写一样)</p>
+<h2 id="创建私有的仓库-Spec-Repo"><a href="#创建私有的仓库-Spec-Repo" class="headerlink" title="创建私有的仓库(Spec Repo)"></a>创建私有的仓库(Spec Repo)</h2><p>执行以下命令:(库名，地址需和配置文件填写一样)</p>
 <blockquote>
 <p>pod repo add 库名 地址  </p>
 </blockquote>
-<h4 id="TBFontAdjust-podspec提交到远程Spec-Repo仓库中"><a href="#TBFontAdjust-podspec提交到远程Spec-Repo仓库中" class="headerlink" title="TBFontAdjust.podspec提交到远程Spec Repo仓库中"></a>TBFontAdjust.podspec提交到远程Spec Repo仓库中</h4><p>cd进入TBFontAdjust项目根目录</p>
+<h3 id="TBFontAdjust-podspec提交到远程Spec-Repo仓库中"><a href="#TBFontAdjust-podspec提交到远程Spec-Repo仓库中" class="headerlink" title="TBFontAdjust.podspec提交到远程Spec Repo仓库中"></a>TBFontAdjust.podspec提交到远程Spec Repo仓库中</h3><p>cd进入TBFontAdjust项目根目录</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># pod repo push [Repo名] [podspec 文件名字]</div><div class="line">$ pod repo push TBFontAdjust TBFontAdjust.podspec</div></pre></td></tr></table></figure>
 <p>如果提交成功可以在~/.cocoapods/repos/MySpecs目录下查看</p>
-<h4 id="上传项目到Cocoapods官方的仓库里去"><a href="#上传项目到Cocoapods官方的仓库里去" class="headerlink" title="上传项目到Cocoapods官方的仓库里去"></a>上传项目到Cocoapods官方的仓库里去</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod trunk push TBFontAdjust.podspec</div></pre></td></tr></table></figure>
+<h3 id="上传项目到Cocoapods官方的仓库里去"><a href="#上传项目到Cocoapods官方的仓库里去" class="headerlink" title="上传项目到Cocoapods官方的仓库里去"></a>上传项目到Cocoapods官方的仓库里去</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod trunk push TBFontAdjust.podspec</div></pre></td></tr></table></figure>
 <p>如果出现[!] You need to register a session first</p>
 <p>执行命令注册:</p>
 <blockquote>
@@ -467,7 +467,7 @@
 <p>再次执行:pod trunk push TBFontAdjust.podspec</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Updating spec repo `master`</div><div class="line">Validating podspec</div><div class="line"> -&gt; TBFontAdjust (0.1.0)</div><div class="line"></div><div class="line">Updating spec repo `master`</div><div class="line"></div><div class="line">--------------------------------------------------------------------------------</div><div class="line"> 🎉  Congrats</div><div class="line"></div><div class="line"> 🚀  TBFontAdjust (0.1.0) successfully published</div><div class="line"> 📅  October 21st, 08:47</div><div class="line"> 🌎  https://cocoapods.org/pods/TBFontAdjust</div><div class="line"> 👍  Tell your friends!</div><div class="line">--------------------------------------------------------------------------------</div><div class="line">bogon:TBFontAdjust bob$</div></pre></td></tr></table></figure>
 <p>说明提交成功了.</p>
-<h2 id="3-查看操作是否成功"><a href="#3-查看操作是否成功" class="headerlink" title="3.查看操作是否成功"></a>3.查看操作是否成功</h2><p>pod search TBFontAdjust</p>
+<h2 id="查看操作是否成功"><a href="#查看操作是否成功" class="headerlink" title="查看操作是否成功"></a>查看操作是否成功</h2><p>pod search TBFontAdjust</p>
 <p>有时候会遇到搜索不到的情况:</p>
 <blockquote>
 <p>[!] Unable to find a pod with name, author, summary, or description matching <code>TBFontAdjust</code></p>
@@ -478,6 +478,8 @@
 <p>[!] An unexpected version directory <code>Assets</code> was encountered for the</p>
 </blockquote>
 <p>解决方法:进入指定文件夹repos把TBFontAdjust删除即可。</p>
+<h2 id="后续版本更新"><a href="#后续版本更新" class="headerlink" title="后续版本更新"></a>后续版本更新</h2><p>我目前为止找不到trunk的相关update接口.<br>1.更新源代码版本号（如：1.1.1-&gt;1.1.2）。<br>2.重新push version tag。<br>3.然后再执行pod trunk push操作。</p>
+<p>如果有更好的方法，敬请告知</p>
 <p>参考链接:<br><a href="http://www.cnblogs.com/LeeGof/p/6635522.html" target="_blank" rel="external">CocoaPods应用篇之搭建并发布自己的私有库</a></p>
 <p><a href="http://www.jianshu.com/p/107cc74847ab" target="_blank" rel="external">利用CocoaPods创建私有库</a></p>
 
@@ -643,7 +645,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -665,7 +667,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -720,7 +722,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-创建Pod项目工程"><span class="nav-number">1.</span> <span class="nav-text">1.创建Pod项目工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-配置pod工程"><span class="nav-number">2.</span> <span class="nav-text">2.配置pod工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-创建私有的仓库-Spec-Repo"><span class="nav-number">3.</span> <span class="nav-text">2.创建私有的仓库(Spec Repo)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TBFontAdjust-podspec提交到远程Spec-Repo仓库中"><span class="nav-number">3.0.1.</span> <span class="nav-text">TBFontAdjust.podspec提交到远程Spec Repo仓库中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上传项目到Cocoapods官方的仓库里去"><span class="nav-number">3.0.2.</span> <span class="nav-text">上传项目到Cocoapods官方的仓库里去</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-查看操作是否成功"><span class="nav-number">4.</span> <span class="nav-text">3.查看操作是否成功</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Pod项目工程"><span class="nav-number">1.</span> <span class="nav-text">创建Pod项目工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-配置pod工程"><span class="nav-number">2.</span> <span class="nav-text">2.配置pod工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建私有的仓库-Spec-Repo"><span class="nav-number">3.</span> <span class="nav-text">创建私有的仓库(Spec Repo)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TBFontAdjust-podspec提交到远程Spec-Repo仓库中"><span class="nav-number">3.1.</span> <span class="nav-text">TBFontAdjust.podspec提交到远程Spec Repo仓库中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传项目到Cocoapods官方的仓库里去"><span class="nav-number">3.2.</span> <span class="nav-text">上传项目到Cocoapods官方的仓库里去</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看操作是否成功"><span class="nav-number">4.</span> <span class="nav-text">查看操作是否成功</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后续版本更新"><span class="nav-number">5.</span> <span class="nav-text">后续版本更新</span></a></li></ol></div>
             
 
           </div>
@@ -766,7 +768,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共8.5k字</span>
+  <span class="post-count">博客全站共9.0k字</span>
 </div>
 
         
